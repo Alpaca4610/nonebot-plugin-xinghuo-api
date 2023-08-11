@@ -44,7 +44,7 @@ server = SparkAI(
     api_url=API_URL
 )
 
-public = plugin_config.group_public
+public = plugin_config.xinghuo_group_public
 session = {}
 
 # 带上下文的聊天
