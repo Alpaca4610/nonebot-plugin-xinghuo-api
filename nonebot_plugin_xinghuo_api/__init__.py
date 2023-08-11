@@ -5,6 +5,7 @@ from nonebot import on_command
 from nonebot.params import CommandArg
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot.adapters.onebot.v11 import  PrivateMessageEvent, MessageEvent
+from nonebot.plugin import PluginMetadata
 from .config import Config, ConfigError
 
 from spark_ai_sdk.spark_ai import SparkAI
