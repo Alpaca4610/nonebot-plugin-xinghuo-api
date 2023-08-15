@@ -61,7 +61,7 @@ clear_request = on_command("xh_clear", block=True, priority=1)
 @chat_record.handle()
 async def _(event: MessageEvent, msg: Message = CommandArg()):
     # 若未开启私聊模式则检测到私聊就结束
-    if isinstance(event, PrivateMessageEvent) and not plugin_config.enable_private_chat:
+    if isinstance(event, PrivateMessageEvent) and not plugin_config.xinghuo_enable_private_chat:
         chat_record.finish("对不起，私聊暂不支持此功能。")
 
     # 检测是否填写 API key
@@ -95,7 +95,7 @@ async def _(event: MessageEvent, msg: Message = CommandArg()):
 @chat_request.handle()
 async def _(event: MessageEvent, msg: Message = CommandArg()):
 
-    if isinstance(event, PrivateMessageEvent) and not plugin_config.enable_private_chat:
+    if isinstance(event, PrivateMessageEvent) and not plugin_config.xinghuo_enable_private_chat:
         chat_record.finish("对不起，私聊暂不支持此功能。")
 
     content = msg.extract_plain_text()
