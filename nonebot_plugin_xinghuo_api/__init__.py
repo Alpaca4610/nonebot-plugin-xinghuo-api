@@ -12,7 +12,7 @@ from spark_ai_sdk.spark_ai import SparkAI
 
 __plugin_meta__ = PluginMetadata(
     name="科大讯飞星火大模型聊天",
-    description="Nonebot框架下的科大讯飞星火大模型聊天插件",
+    description="Nonebot框架下的科大讯飞星火大模型聊天插件,已适配V2.0版API",
     usage=
     '''
     xh 使用该命令进行问答时，机器人具有上下文回复的能力
@@ -35,7 +35,11 @@ if not plugin_config.xinghuo_app_id or not plugin_config.xinghuo_app_id or not p
 APP_ID = plugin_config.xinghuo_app_id
 APISecret = plugin_config.xinghuo_api_secret
 APIKey = plugin_config.xinghuo_api_key
-API_URL = "wss://spark-api.xf-yun.com/v1.1/chat"
+
+if plugin_config.xinghuo_api_v2 :
+    API_URL = "wss://spark-api.xf-yun.com/v2.1/chat"
+else:
+    API_URL = "wss://spark-api.xf-yun.com/v1.1/chat"
 
 server = SparkAI(
     app_id=APP_ID,

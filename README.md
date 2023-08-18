@@ -10,7 +10,8 @@
 </div>
 
 # 介绍
-- 本插件是适配科大讯飞星火大模型官方API的聊天机器人插件，同时具有上下文记忆回复功能。
+- 本插件是适配科大讯飞星火大模型官方API的聊天机器人插件，同时具有上下文记忆回复功能。已适配V2.0版API。
+- 注：2023.8.18晚，星火V2.0模型测试时偶发内部引擎错误，等待科大讯飞修复。
 # 安装
 
 * 手动安装
@@ -40,7 +41,8 @@ xinghuo_api_key = xxxxxxxx
 
 可选内容：
 ```
-ENABLE_PRIVATE_CHAT = True   # 私聊开关，默认开启，改为False关闭
+xinghuo_enable_private_chat = True   # 私聊开关，默认开启，改为False关闭
+xinghuo_api_v2: bool = False    #是否使用V2.0版API
 ```
 
 
