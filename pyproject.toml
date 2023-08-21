@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-xinghuo-api"
-version = "1.0.0"
+version = "2.0.0"
 description = "A nonebot plugin for xinghuo LLM"
 authors = ["Alpaca <alpaca@bupt.edu.cn>"]
 license = "MIT"
@@ -10,7 +10,7 @@ readme = "README.md"
 python = "^3.8"
 nonebot2 = "^2.0.0rc3"
 nonebot-adapter-onebot = "^2.2.1"
-spark-ai-sdk = "^0.0.4"
+websocket-client = "^1.6.1"
 
 [[tool.poetry.source]]
 name = "tsinghua"

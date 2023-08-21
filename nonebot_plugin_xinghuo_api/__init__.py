@@ -8,7 +8,7 @@ from nonebot.adapters.onebot.v11 import  PrivateMessageEvent, MessageEvent
 from nonebot.plugin import PluginMetadata
 from .config import Config, ConfigError
 
-from spark_ai_sdk.spark_ai import SparkAI
+from . import SparkApi
 
 __plugin_meta__ = PluginMetadata(
     name="科大讯飞星火大模型聊天",
@@ -32,21 +32,17 @@ plugin_config = Config.parse_obj(nonebot.get_driver().config.dict())
 if not plugin_config.xinghuo_app_id or not plugin_config.xinghuo_app_id or not plugin_config.xinghuo_api_key:
     raise ConfigError("请设置星火大模型API信息")
 
-APP_ID = plugin_config.xinghuo_app_id
-APISecret = plugin_config.xinghuo_api_secret
-APIKey = plugin_config.xinghuo_api_key
+appid = plugin_config.xinghuo_app_id
+api_secret = plugin_config.xinghuo_api_secret
+api_key = plugin_config.xinghuo_api_key
 
 if plugin_config.xinghuo_api_v2 :
-    API_URL = "wss://spark-api.xf-yun.com/v2.1/chat"
+    API_URL = "ws://spark-api.xf-yun.com/v2.1/chat"  # v2.0环境的地址
+    domain = "generalv2"    # v2.0版本
 else:
-    API_URL = "wss://spark-api.xf-yun.com/v1.1/chat"
+    API_URL = "ws://spark-api.xf-yun.com/v1.1/chat"  # v1.5环境的地址
+    domain = "general"   # v1.5版本
 
-server = SparkAI(
-    app_id=APP_ID,
-    api_key=APIKey,
-    api_secret=APISecret,
-    api_url=API_URL
-)
 
 public = plugin_config.xinghuo_group_public
 session = {}
@@ -69,7 +65,7 @@ async def _(event: MessageEvent, msg: Message = CommandArg()):
         chat_record.finish("对不起，私聊暂不支持此功能。")
 
     # 检测是否填写 API key
-    if APP_ID == "" or APISecret == "" or APIKey == "":
+    if appid == "" or api_secret == "" or api_key == "":
         await chat_record.finish(MessageSegment.text("请先配置星火大模型API信息"), at_sender=True)
 
     # 提取提问内容
@@ -134,9 +130,30 @@ def create_session_id(event):
     return session_id
 
 def getRes(history,content):
-    for response, history in server.chat_stream(content, history):
-            pass
-    res = history[-1].get('content')
+    history = checklen(getText("user",content,history))
+    SparkApi.answer =""
+    SparkApi.main(appid,api_key,api_secret,API_URL,domain,history)
+    getText("assistant",SparkApi.answer,history)
+    return SparkApi.answer
+    
 
-    return res
+def getText(role,content,text):
+    jsoncon = {}
+    jsoncon["role"] = role
+    jsoncon["content"] = content
+    text.append(jsoncon)
+    return text
+
+def getlength(text):
+    length = 0
+    for content in text:
+        temp = content["content"]
+        leng = len(temp)
+        length += leng
+    return length
+
+def checklen(text):
+    while (getlength(text) > 8000):
+        del text[0]
+    return text
     
