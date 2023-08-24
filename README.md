@@ -41,7 +41,7 @@ xinghuo_api_key = xxxxxxxx
 可选内容：
 ```
 xinghuo_enable_private_chat = True   # 私聊开关，默认开启，改为False关闭
-xinghuo_api_v2: bool = False    #是否使用V2.0版API
+xinghuo_api_v2 = False    #是否使用V2.0版API
 ```
 
 
