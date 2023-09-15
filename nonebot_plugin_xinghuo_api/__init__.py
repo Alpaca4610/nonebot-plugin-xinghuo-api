@@ -6,6 +6,7 @@ from nonebot.params import CommandArg
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot.adapters.onebot.v11 import  PrivateMessageEvent, MessageEvent
 from nonebot.plugin import PluginMetadata
+from nonebot.rule import to_me
 from .config import Config, ConfigError
 
 from . import SparkApi
@@ -51,7 +52,7 @@ session = {}
 chat_record = on_command("xh", block=False, priority=1)
 
 # 不带上下文的聊天
-chat_request = on_command("XH", block=False, priority=1)
+chat_request = on_command("", rule=to_me(), block=False, priority=1)
 
 # 清除历史记录
 clear_request = on_command("xh_clear", block=True, priority=1)
