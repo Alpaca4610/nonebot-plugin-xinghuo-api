@@ -37,9 +37,12 @@ appid = plugin_config.xinghuo_app_id
 api_secret = plugin_config.xinghuo_api_secret
 api_key = plugin_config.xinghuo_api_key
 
-if plugin_config.xinghuo_api_v2 :
+if plugin_config.xinghuo_api_version == "v2" :
     API_URL = "ws://spark-api.xf-yun.com/v2.1/chat"  # v2.0环境的地址
     domain = "generalv2"    # v2.0版本
+elif plugin_config.xinghuo_api_version == "v3" :
+    API_URL = "ws://spark-api.xf-yun.com/v3.1/chat"  # v3.0环境的地址
+    domain = "generalv3"    # v3.0版本
 else:
     API_URL = "ws://spark-api.xf-yun.com/v1.1/chat"  # v1.5环境的地址
     domain = "general"   # v1.5版本

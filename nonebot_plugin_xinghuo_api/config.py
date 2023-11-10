@@ -9,7 +9,7 @@ class Config(BaseModel, extra=Extra.ignore):
 
     xinghuo_enable_private_chat: bool = True
     xinghuo_group_public: bool = False  # 群聊是否开启公共会话
-    xinghuo_api_v2: bool = False #是否使用星火大模型V2.0
+    xinghuo_api_version: str = "" #星火大模型的版本，默认为v1.5。使用2.0版本请填入v2，使用3.0版本请填入v3
 
 
 class ConfigError(Exception):
