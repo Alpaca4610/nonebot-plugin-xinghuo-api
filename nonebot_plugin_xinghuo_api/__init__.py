@@ -16,8 +16,8 @@ __plugin_meta__ = PluginMetadata(
     description="Nonebot框架下的科大讯飞星火大模型聊天插件,已适配V2.0版API",
     usage=
     '''
+    直接@机器人进行问答时，机器人没有上下文回复的能力
     xh 使用该命令进行问答时，机器人具有上下文回复的能力
-    XH 使用该命令进行问答时，机器人没有上下文回复的能力
     xh_clear 清除当前用户的聊天记录
     ''',
     config= Config,
@@ -37,15 +37,13 @@ appid = plugin_config.xinghuo_app_id
 api_secret = plugin_config.xinghuo_api_secret
 api_key = plugin_config.xinghuo_api_key
 
-if plugin_config.xinghuo_api_version == "v2" :
-    API_URL = "ws://spark-api.xf-yun.com/v2.1/chat"  # v2.0环境的地址
-    domain = "generalv2"    # v2.0版本
-elif plugin_config.xinghuo_api_version == "v3" :
-    API_URL = "ws://spark-api.xf-yun.com/v3.1/chat"  # v3.0环境的地址
-    domain = "generalv3"    # v3.0版本
-else:
-    API_URL = "ws://spark-api.xf-yun.com/v1.1/chat"  # v1.5环境的地址
-    domain = "general"   # v1.5版本
+if len(plugin_config.xinghuo_api_version) == 2 : # v1 v3 v3
+    API_URL = "ws://spark-api.xf-yun.com/" + plugin_config.xinghuo_api_version + ".1/chat"
+    domain = "general" + plugin_config.xinghuo_api_version.replace("v1", "")
+else: # assistant_id
+    API_URL = "ws://spark-openapi.cn-huabei-1.xf-yun.com/v1/assistants/" + plugin_config.xinghuo_api_version
+    domain = "generalv2"
+
 
 
 public = plugin_config.xinghuo_group_public
@@ -139,7 +137,7 @@ def getRes(history,content):
     SparkApi.main(appid,api_key,api_secret,API_URL,domain,history)
     getText("assistant",SparkApi.answer,history)
     return SparkApi.answer
-    
+
 
 def getText(role,content,text):
     jsoncon = {}
@@ -160,4 +158,4 @@ def checklen(text):
     while (getlength(text) > 8000):
         del text[0]
     return text
-    
+
