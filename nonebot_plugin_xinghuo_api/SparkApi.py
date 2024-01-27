@@ -90,6 +90,7 @@ def on_message(ws, message):
         status = choices["status"]
         content = choices["text"][0]["content"]
         sid = ws.sid
+        global answer
         if sid not in answer:
             answer[sid] = ""
         answer[sid] += content
