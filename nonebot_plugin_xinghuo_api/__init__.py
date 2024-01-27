@@ -1,10 +1,12 @@
+import random
+import string
 import nonebot
 import asyncio
 
 from nonebot import on_command
 from nonebot.params import CommandArg
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
-from nonebot.adapters.onebot.v11 import  PrivateMessageEvent, MessageEvent
+from nonebot.adapters.onebot.v11 import PrivateMessageEvent, MessageEvent
 from nonebot.plugin import PluginMetadata
 from nonebot.rule import to_me
 from .config import Config, ConfigError
@@ -20,7 +22,7 @@ __plugin_meta__ = PluginMetadata(
     xh 使用该命令进行问答时，机器人具有上下文回复的能力
     xh_clear 清除当前用户的聊天记录
     ''',
-    config= Config,
+    config=Config,
     extra={},
     type="application",
     homepage="https://github.com/Alpaca4610/nonebot-plugin-xinghuo-api",
@@ -37,14 +39,12 @@ appid = plugin_config.xinghuo_app_id
 api_secret = plugin_config.xinghuo_api_secret
 api_key = plugin_config.xinghuo_api_key
 
-if len(plugin_config.xinghuo_api_version) == 2 : # v1 v3 v3
+if len(plugin_config.xinghuo_api_version) == 2:  # v1 v3 v3
     API_URL = "ws://spark-api.xf-yun.com/" + plugin_config.xinghuo_api_version + ".1/chat"
     domain = "general" + plugin_config.xinghuo_api_version.replace("v1", "")
-else: # assistant_id
+else:  # assistant_id
     API_URL = "ws://spark-openapi.cn-huabei-1.xf-yun.com/v1/assistants/" + plugin_config.xinghuo_api_version
     domain = "generalv2"
-
-
 
 public = plugin_config.xinghuo_group_public
 session = {}
@@ -80,14 +80,16 @@ async def _(event: MessageEvent, msg: Message = CommandArg()):
     # 创建会话ID
     session_id = create_session_id(event)
 
+    sid = generate_random_string(16)
+
     # 初始化保存空间
     if session_id not in session:
         session[session_id] = []
 
     # 开始请求
     try:
-        loop =  asyncio.get_event_loop()
-        res = await loop.run_in_executor(None, getRes, session[session_id],content)
+        loop = asyncio.get_event_loop()
+        res = await loop.run_in_executor(None, getRes, session[session_id], content, sid)
     except Exception as error:
         await chat_record.finish(str(error), at_sender=True)
     await chat_record.finish(MessageSegment.text(res), at_sender=True)
@@ -96,7 +98,6 @@ async def _(event: MessageEvent, msg: Message = CommandArg()):
 # 不带记忆的对话
 @chat_request.handle()
 async def _(event: MessageEvent, msg: Message = CommandArg()):
-
     if isinstance(event, PrivateMessageEvent) and not plugin_config.xinghuo_enable_private_chat:
         chat_record.finish("对不起，私聊暂不支持此功能。")
 
@@ -106,10 +107,12 @@ async def _(event: MessageEvent, msg: Message = CommandArg()):
 
     await chat_request.send(MessageSegment.text("星火大模型正在思考中......"))
 
+    sid = generate_random_string(16)
+
     try:
         temp = []
-        loop =  asyncio.get_event_loop()
-        res = await loop.run_in_executor(None, getRes, temp ,content)
+        loop = asyncio.get_event_loop()
+        res = await loop.run_in_executor(None, getRes, temp, content, sid)
     except Exception as error:
         await chat_request.finish(str(error))
     await chat_request.finish(MessageSegment.text(res), at_sender=True)
@@ -119,6 +122,15 @@ async def _(event: MessageEvent, msg: Message = CommandArg()):
 async def _(event: MessageEvent):
     del session[create_session_id(event)]
     await clear_request.finish(MessageSegment.text("成功清除历史记录！"), at_sender=True)
+
+
+# 生成随机字符串
+def generate_random_string(length=16):
+    # 生成数字和字母字符集
+    characters = string.digits + string.ascii_letters
+    # 生成随机字符串
+    random_string = ''.join(random.choice(characters) for _ in range(length))
+    return random_string
 
 
 # 根据消息类型创建会话id
@@ -131,20 +143,24 @@ def create_session_id(event):
         session_id = event.get_session_id()
     return session_id
 
-def getRes(history,content):
-    history = checklen(getText("user",content,history))
-    SparkApi.answer =""
-    SparkApi.main(appid,api_key,api_secret,API_URL,domain,history)
-    getText("assistant",SparkApi.answer,history)
-    return SparkApi.answer
+
+def getRes(history, content, sid):
+    history = checklen(getText("user", content, history))
+    SparkApi.answer[sid] = ""
+    SparkApi.main(appid, api_key, api_secret, API_URL, domain, history, sid)
+    getText("assistant", SparkApi.answer[sid], history)
+    ans = SparkApi.answer[sid]
+    del SparkApi.answer[sid]
+    return ans
 
 
-def getText(role,content,text):
+def getText(role, content, text):
     jsoncon = {}
     jsoncon["role"] = role
     jsoncon["content"] = content
     text.append(jsoncon)
     return text
+
 
 def getlength(text):
     length = 0
@@ -154,8 +170,8 @@ def getlength(text):
         length += leng
     return length
 
+
 def checklen(text):
     while (getlength(text) > 8000):
         del text[0]
     return text
-
