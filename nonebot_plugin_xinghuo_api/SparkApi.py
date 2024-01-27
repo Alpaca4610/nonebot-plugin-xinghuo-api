@@ -12,7 +12,7 @@ from urllib.parse import urlencode
 from wsgiref.handlers import format_date_time
 
 import websocket  # 使用websocket_client
-answer = ""
+answer = {}
 
 class Ws_Param(object):
     # 初始化
@@ -23,6 +23,7 @@ class Ws_Param(object):
         self.host = urlparse(Spark_url).netloc
         self.path = urlparse(Spark_url).path
         self.Spark_url = Spark_url
+        self.sid = "abc"
 
     # 生成url
     def create_url(self):
@@ -79,7 +80,6 @@ def run(ws, *args):
 
 # 收到websocket消息的处理
 def on_message(ws, message):
-    # print(message)
     data = json.loads(message)
     code = data['header']['code']
     if code != 0:
@@ -89,10 +89,12 @@ def on_message(ws, message):
         choices = data["payload"]["choices"]
         status = choices["status"]
         content = choices["text"][0]["content"]
-        #print(content,end ="")
+        sid = ws.sid
         global answer
-        answer += content
-        # print(1)
+        if sid not in answer:
+            answer[sid] = ""
+        answer[sid] += content
+
         if status == 2:
             ws.close()
 
@@ -123,7 +125,7 @@ def gen_params(appid, domain,question):
     return data
 
 
-def main(appid, api_key, api_secret, Spark_url,domain, question):
+def main(appid, api_key, api_secret, Spark_url,domain, question,sid):
     # print("星火:")
     wsParam = Ws_Param(appid, api_key, api_secret, Spark_url)
     websocket.enableTrace(False)
@@ -132,4 +134,5 @@ def main(appid, api_key, api_secret, Spark_url,domain, question):
     ws.appid = appid
     ws.question = question
     ws.domain = domain
+    ws.sid = sid
     ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
