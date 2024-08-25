@@ -6,11 +6,12 @@
 
 <div align="center">
 
-# nonebot-plugin-chatgpt-turbo
+# nonebot-plugin-xinghuo-api
 </div>
 
 # 介绍
-- 本插件是适配科大讯飞星火大模型官方API的聊天机器人插件，同时具有上下文记忆回复功能。已适配V3.0版API及星火助手API。
+- 本插件是适配科大讯飞星火大模型官方API的聊天机器人插件，同时具有上下文记忆回复功能。已适配版本：Ultra，Max，Pro，Pro-128K，V2.0，Lite。
+- 当前版本可能会与LittlePaimon机器人冲突
 # 安装
 
 * 手动安装
@@ -41,12 +42,11 @@ xinghuo_api_key = xxxxxxxx
 可选内容：
 ```
 xinghuo_enable_private_chat = True   # 私聊开关，默认开启，改为False关闭
-xinghuo_api_version = ""    #星火大模型的版本，默认为v1.5。使用2.0版本请填入v2，使用3.0版本请填入v3。使用助手API请输入助手id，在https://xinghuo.xfyun.cn/botcenter/createbot获取
+xinghuo_api_version = ""    #星火大模型的版本，默认为免费的Lite模型，可选填：Ultra，Max，Pro，Pro-128K，V2.0，Lite
 ```
-
 
 # 使用方法
 
-- @机器人进行问答时，机器人没有上下文回复的能力
-- xh 使用该命令进行问答时，机器人具有上下文回复的能力
+- xh 获取回复，没有上下文回复的能力
+- XH 获取回复，具有上下文回复的能力
 - xh_clear 清除当前用户的聊天记录
