@@ -113,8 +113,7 @@ async def _(event: MessageEvent, msg: Message = CommandArg()):
     if session_id not in session:
         session[session_id] = [ChatMessage(role="user", content=content)]
     else:
-        session[session_id].append(ChatMessage(role="assistant", content=res))
-        print(session[session_id])
+        session[session_id].append(ChatMessage(role="user", content=content))
 
     # 开始请求
     try:
