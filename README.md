@@ -10,7 +10,7 @@
 </div>
 
 # 介绍
-- 本插件是适配科大讯飞星火大模型官方API的聊天机器人插件，同时具有上下文记忆回复功能。已适配版本：Ultra，Max，Pro，Pro-128K，V2.0，Lite。
+- 本插件是适配科大讯飞星火大模型官方API的聊天机器人插件，同时具有上下文记忆回复和自定义人格功能。已适配版本：Ultra，Max，Pro，Pro-128K，V2.0，Lite。
 - 当前版本可能会与LittlePaimon机器人冲突
 # 安装
 
@@ -43,6 +43,7 @@ xinghuo_api_key = xxxxxxxx
 ```
 xinghuo_enable_private_chat = True   # 私聊开关，默认开启，改为False关闭
 xinghuo_api_version = ""    #星火大模型的版本，默认为免费的Lite模型，可选填：Ultra，Max，Pro，Pro-128K，V2.0，Lite
+xinghuo_api_prompt = "" # 星火大模型人格prompt，留空默认不开启，人格设置是否成功与人格prompt有关
 ```
 
 # 使用方法

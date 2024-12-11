@@ -68,6 +68,8 @@ appid = plugin_config.xinghuo_app_id
 api_secret = plugin_config.xinghuo_api_secret
 api_key = plugin_config.xinghuo_api_key
 
+sys_prompt = plugin_config.xinghuo_api_prompt
+
 API_URL, domain = get_spark_model_info(plugin_config.xinghuo_api_version)
 
 public = plugin_config.xinghuo_group_public
@@ -111,7 +113,10 @@ async def _(event: MessageEvent, msg: Message = CommandArg()):
 
     # 初始化保存空间
     if session_id not in session:
-        session[session_id] = [ChatMessage(role="user", content=content)]
+        if sys_prompt:
+            session[session_id] = [ChatMessage(role="system", content=sys_prompt),ChatMessage(role="user", content=content)]
+        else:
+            session[session_id] = [ChatMessage(role="user", content=content)]
     else:
         session[session_id].append(ChatMessage(role="user", content=content))
 
@@ -149,6 +154,11 @@ async def _(event: MessageEvent, msg: Message = CommandArg()):
     await chat_request.send(MessageSegment.text("星火大模型正在思考中......"))
 
     try:
+        if sys_prompt:
+            msg = [ChatMessage(role="system", content=sys_prompt),ChatMessage(role="user", content=content)]
+        else:
+            msg = [ChatMessage(role="user", content=content)]
+
         loop = asyncio.get_event_loop()
         res = await loop.run_in_executor(
             None,
@@ -158,7 +168,7 @@ async def _(event: MessageEvent, msg: Message = CommandArg()):
             api_key,
             api_secret,
             domain,
-            [ChatMessage(role="user", content=content)],
+            msg,
         )
     except Exception as error:
         await chat_request.finish(str(error))

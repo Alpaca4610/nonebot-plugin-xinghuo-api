@@ -9,8 +9,9 @@ class Config(BaseModel, extra=Extra.ignore):
 
     xinghuo_enable_private_chat: bool = True # 私聊开关，默认开启，改为False关闭
     xinghuo_group_public: bool = False  # 群聊是否开启公共会话
-    xinghuo_api_version: str = "Lite" #星火大模型的版本，选填：Ultra，Max，Pro，Pro-128K，V2.0，Lite
+    xinghuo_api_version: str = "Lite" # 星火大模型的版本，选填：Ultra，Max，Pro，Pro-128K，V2.0，Lite
 
+    xinghuo_api_prompt: Optional[str] = "" # 星火大模型预置人格，留空默认不开启
 
 class ConfigError(Exception):
     pass
