@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-xinghuo-api"
-version = "2.3.0"
+version = "2.3.1"
 description = "A nonebot plugin for xinghuo LLM"
 authors = ["Alpaca <admin@alpaca.kim>"]
 license = "MIT"

@@ -197,8 +197,6 @@ def getRes(url, id, key, secret, domain, messages_):
     messages = messages_
     handler = ChunkPrintHandler()
     a = spark.generate([messages], callbacks=[handler])
-    # print(a)
-    # print(a.llm_output)
     res = a.generations[0][0].text
     messages_.append(ChatMessage(role="assistant", content=res))
     return res
